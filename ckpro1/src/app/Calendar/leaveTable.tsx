@@ -1,5 +1,5 @@
 "use client";
-import { LeaveData } from "./types";
+import { LeaveData } from "@/lib/types";
 
 interface LeaveTableProps {
 	leaveData: LeaveData[];

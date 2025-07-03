@@ -1,5 +1,5 @@
-import { hashPassword, generateSalt } from '../lib/auth';
-import pool from '../lib/db';
+import { hashPassword, generateSalt } from '@/lib/auth';
+import pool from '@/lib/db';
 
 interface UserData {
 		full_name: string;
@@ -23,14 +23,14 @@ export async function createUser(userData: UserData) {
 				hire_date = null,
 				created_by
 		} = userData;
-		
+
 		// Validate inputs
 		if (!full_name || !password) {
 				throw new Error('Full name and password are required');
 		}
 
-		const salt = generateSalt();
-		const passwordHash = hashPassword(password, salt);
+		const salt = await generateSalt();
+		const passwordHash = await hashPassword(password, salt);
 
 		const client = await pool.connect();
 		

@@ -19,37 +19,74 @@ import {
 
 export default function RootLayout({
 	children,
-}: {
-	children: React.ReactNode;
-}) {
+	}: {
+		children: React.ReactNode;
+	}) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-	const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+	const [user, setUser] = useState<{ name: string; email: string; role: string } | null>(null);
 	const [checkingAuth, setCheckingAuth] = useState(true);
 
 	// Check auth status on mount
 	useEffect(() => {
-			const userData = sessionStorage.getItem("user");
-			console.log(userData)
-			
-			if (
-					!userData &&
-					!pathname.startsWith("/login") 
-					/* && !pathname.startsWith("/register") */
-			) {
+		// Skip auth check if already on login page
+		if (pathname.startsWith("/login")) {
+			setCheckingAuth(false); // Immediately mark as not checking
+			return; // Exit the effect
+		}
+
+		const checkAuth = async () => {
+			try {
+				const response = await fetch('/api/auth/verify', {
+					credentials: 'include'
+				});
+				
+				if (!response.ok && !pathname.startsWith("/login")) {
 					router.push("/login");
-			} else if (userData) {
-					setUser(JSON.parse(userData));
+					return;
+				}
+
+				if (response.ok) {
+					const userData = await response.json();
+					setUser(userData);
+				}
+			} catch (error) {
+				console.error("Auth check failed:", error);
+				if (!pathname.startsWith("/login")) {
+					router.push("/login");
+				}
+			} finally {
+				setCheckingAuth(false);
 			}
-			
-			setCheckingAuth(false); // Ensures the loading spinner disappears after the check
+		};
+
+		checkAuth();
 	}, [router, pathname]);
 
-	const handleLogout = () => {
-		sessionStorage.removeItem("user");
-		router.push("/login");
+	const handleLogout = async () => {
+		try {
+			const response = await fetch('/api/logout', {
+				method: 'POST',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (!response.ok) throw new Error('Logout failed');
+
+			// Clear client-side state BEFORE redirect
+			setUser(null);
+			localStorage.clear(); //  Clear other stored data
+			sessionStorage.clear();
+
+			// Hard redirect to purge memory
+			window.location.href = '/login'; // Redirect to login page
+		} catch (error) {
+			console.error("Logout failed:", error);
+		}
 	};
 
 	const navItems = [
@@ -284,5 +321,4 @@ export default function RootLayout({
 		</html>
 		);
 	}
-	
 }

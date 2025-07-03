@@ -1,5 +1,5 @@
 "use client";
-import { LeaveData } from "../Calendar/types";
+import { LeaveData } from "@/lib/types";
 interface LeaveModalProps {
 	leave: LeaveData | null;
 	onClose: () => void;

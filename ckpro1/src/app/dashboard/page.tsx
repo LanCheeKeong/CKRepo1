@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Calendar } from "../Calendar/calendar";
-import { CalendarControls } from "../Calendar/calendarControl";
-import { LeaveTable } from "../Calendar/leaveTable";
-import { LeaveData } from "../Calendar/types";
-import { LeaveModal } from "../Calendar/leaveModal";
+import { Calendar } from "@/app/Calendar/calendar";
+import { CalendarControls } from "@/app/Calendar/calendarControl";
+import { LeaveTable } from "@/app/Calendar/leaveTable";
+import { LeaveModal } from "@/app/Calendar/leaveModal";
+import { LeaveData } from "@/lib/types";
 
 export default function Dashboard() {
 	const [currentMonth, setCurrentMonth] = useState(new Date());

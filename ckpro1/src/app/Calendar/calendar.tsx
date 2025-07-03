@@ -1,6 +1,5 @@
 "use client";
-import { useState } from "react";
-import { LeaveData } from "./types";
+import { LeaveData } from "@/lib/types";
 
 interface CalendarProps {
 	currentMonth: Date;

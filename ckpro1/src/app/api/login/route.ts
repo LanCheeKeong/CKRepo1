@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import pool from '../../../lib/db';
-import { verifyPassword, UserStatus } from '../../../lib/auth';
-
+import pool from '@/lib/db';
+import { verifyPassword, UserStatus, generateToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
 		const { employeeID, password } = await request.json();
@@ -50,21 +50,41 @@ export async function POST(request: Request) {
 						[id]
 				);
 
-				client.release();
-
-				// Create response
-				const response = NextResponse.json({
-						success: true,
-						user: {
-								employeeID: user.employee_id,
-								name: user.name,
-								email: user.email,
-								role: user.role,
-								status: user.status
-						}
+				// Create JWT token
+				const token = generateToken({
+					employee_id: id,
+					full_name: user.full_name,
+					email: user.email,
+					position: user.position,
+					status: user.status,
+					password: user.password,
+					salt: user.salt
 				});
 
-				return response;
+				client.release();
+
+				// Set secure cookie
+				const cookieStore = await cookies();
+				cookieStore.set('auth-token', token, {
+						httpOnly: true,
+						secure: process.env.NODE_ENV === 'development',
+						sameSite: 'strict',
+						path: '/',
+						maxAge: 60 * 60 // 24 hours
+				});
+
+				return NextResponse.json({
+						success: true,
+						user: {
+								employee_id: id,
+								full_name: user.full_name,
+								email: user.email,
+								position: user.position,
+								status: user.status,
+								password: user.password,
+								salt: user.salt
+						}
+				});
 
 		} catch (error) {
 				console.error('Login error:', error);
