@@ -27,7 +27,9 @@ export async function hashPassword(password: string, salt: string): Promise<stri
 		keyMaterial,
 		256
 	);
-	return Array.from(new Uint8Array(key)).map(b => b.toString(16).padStart(2, '0')).join('');
+	
+	const hashArray = Array.from(new Uint8Array(key));
+	return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export async function verifyPassword(
@@ -38,7 +40,6 @@ export async function verifyPassword(
 	const inputHash = await hashPassword(inputPassword, salt);
 	return inputHash === storedHash;
 }
-
 
 // Status constants
 export const UserStatus = {
@@ -81,8 +82,6 @@ export function verifyToken(token: string): TokenPayload {
 			'full_name', 
 			'status'
 		];
-		
-		console.log(requiredClaims);
 
 		const missingClaims = requiredClaims.filter(claim => !decoded[claim]);
 		if (missingClaims.length > 0) {
@@ -110,9 +109,9 @@ export function getAuthCookie(token: string, maxAge = 86400): string {
 }
 
 export function clearAuthCookie(): string {
-  return `auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly${
-    process.env.  NODE_ENV === 'development' ? '; Secure' : ''
-  }`;
+	return `auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly${
+		process.env.  NODE_ENV === 'development' ? '; Secure' : ''
+	}`;
 }
 
 // Optional: Token generation (if you need it in the same file)

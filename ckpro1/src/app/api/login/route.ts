@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 				const user = result.rows[0];
 
 				// Verify password
-				const isValid = verifyPassword(password, user.password, user.salt);
+				const isValid = await verifyPassword(password, user.password, user.salt);
 				if (!isValid) {
 						client.release();
 						return NextResponse.json(
@@ -56,9 +56,7 @@ export async function POST(request: Request) {
 					full_name: user.full_name,
 					email: user.email,
 					position: user.position,
-					status: user.status,
-					password: user.password,
-					salt: user.salt
+					status: user.status
 				});
 
 				client.release();
