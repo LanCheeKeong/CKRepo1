@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-	const [name, setName] = useState("");
+	const [employeeID, setEmployeeID] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +16,8 @@ export default function LoginPage() {
 
 		try {
 			// Validate inputs
-			if (!name.trim() || !password) {
-				throw new Error("Username and password are required");
+			if (!employeeID.trim() || !password) {
+				throw new Error("Employee ID and password are required");
 			}
 
 			const response = await fetch('/api/login', {
@@ -25,7 +25,7 @@ export default function LoginPage() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ name, password }),
+				body: JSON.stringify({ employeeID, password }),
 			});
 
 			const data = await response.json();
@@ -64,18 +64,18 @@ export default function LoginPage() {
 					<form onSubmit={handleSubmit} className="space-y-6">
 						<div>
 							<label
-								htmlFor="name"
+								htmlFor="employeeID"
 								className="block text-sm font-medium text-gray-700 mb-1"
 							>
-								Username
+								Employee ID
 							</label>
 							<input
-								id="name"
+								id="employeeID"
 								type="text"
-								value={name}
-								onChange={(e) => setName(e.target.value)}
+								value={employeeID}
+								onChange={(e) => setEmployeeID(e.target.value)}
 								className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-								placeholder="Enter your username"
+								placeholder="Enter your Employee ID"
 								required
 							/>
 						</div>
