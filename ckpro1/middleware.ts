@@ -5,14 +5,14 @@ import { verifyToken } from './src/lib/auth';
 const PUBLIC_PATHS = new Set([
 	'/login',
 	'/register',
-	'/api/auth/login',
+	'/api/login',
 	'/api/auth/register',
 	'/api/auth/verify' // Have token verification endpoint
 ]);
 
 // Paths that should never be cached
 const DYNAMIC_PATHS = new Set([
-	'/api/auth/logout'
+	'/api/logout'
 ]);
 
 export async function middleware(request: NextRequest) {

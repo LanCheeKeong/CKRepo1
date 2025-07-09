@@ -63,13 +63,13 @@ export async function POST(request: Request) {
 
 				// Set secure cookie
 				const cookieStore = await cookies();
-				cookieStore.set('auth-token', token, {
+					cookieStore.set('auth-token', token, {
 						httpOnly: true,
-						secure: process.env.NODE_ENV === 'development',
-						sameSite: 'strict',
+						secure: process.env.NODE_ENV === 'production', // Only use secure in prod
+						sameSite: 'lax',
 						path: '/',
-						maxAge: 60 * 60 // 24 hours
-				});
+						maxAge: 60 * 60 // 1 hour
+					});
 
 				return NextResponse.json({
 						success: true,

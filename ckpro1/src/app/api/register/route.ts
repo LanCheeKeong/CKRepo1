@@ -58,14 +58,10 @@ export async function POST(request: Request) {
 						}
 				});
 
-		} catch (error: any) {
-				console.error('Registration error:', error);
+		} catch (error) {
 				return NextResponse.json(
-						{ 
-								success: false, 
-								error: error.message || 'Registration failed' 
-						},
-						{ status: 400 }
+					{ success: false, error: error.message || 'Registration failed'  },
+					{ status: 400 }
 				);
 		}
 }

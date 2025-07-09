@@ -42,9 +42,6 @@ export async function createUser(employeeData: EmployeeData) {
 	const salt = await generateSalt();
 	const passwordHash = await hashPassword(employeeData.password, salt);
 
-	console.log('Salt to store:', salt); // Should be 32-character hex string
-	console.log('Hash to store:', passwordHash); // Should be 64-character hex string
-
 	// Connect to the database
 	const client = await pool.connect();
 	
@@ -119,29 +116,8 @@ export async function createUser(employeeData: EmployeeData) {
 		}
 
 		return result.rows[0];
-	} catch (error: any) {
+	} catch (error) {
 		await client.query('ROLLBACK');
-		
-		// Handle specific PostgreSQL errors
-		if (error.code === '23505') { // Unique violation
-			if (error.constraint?.includes('email')) {
-				throw new Error('Email already exists');
-			}
-			if (error.constraint?.includes('full_name')) {
-				throw new Error('Employee name already exists');
-			}
-			if (error.constraint?.includes('ic')) {
-				throw new Error('IC number already registered');
-			}
-		}
-		
-		if (error.code === '23503') { // Foreign key violation
-			if (error.constraint?.includes('department_id')) {
-				throw new Error('Invalid department reference');
-			}
-		}
-
-		console.error('Employee creation error:', error);
 		throw new Error(error.message || 'Failed to create employee');
 	} finally {
 		client.release();

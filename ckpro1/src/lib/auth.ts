@@ -65,6 +65,7 @@ if (!JWT_SECRET) {
 }
 
 export function verifyToken(token: string): TokenPayload {
+	console.log('Verifying token:', token);
 	if (!token) {
 		throw new Error('No token provided');
 	}

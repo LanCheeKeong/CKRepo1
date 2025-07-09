@@ -56,3 +56,10 @@ export interface Employee {
   // For form handling only (not in database)
   confirmPassword?: string; // Only for password confirmation in forms
 }
+
+import type { ChangeEvent } from 'react';
+export interface PartialEmployeeFormProps {
+  form: Partial<Employee> & { confirmPassword?: string };
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  errors: Record<string, string>;
+}

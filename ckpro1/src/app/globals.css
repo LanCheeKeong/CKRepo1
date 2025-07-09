@@ -36,3 +36,12 @@ body {
 .animate-fadeOut {
   animation: fadeOut 1s forwards;
 }
+
+@keyframes countdown {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
